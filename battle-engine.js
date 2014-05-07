@@ -93,9 +93,9 @@ process.on('message', function (message) {
 
 				if (!require('./crashlogger.js')(fakeErr, 'A battle')) {
 					var ministack = ("" + err.stack).split("\n").slice(0, 2).join("<br />");
-					process.client.send(data[0] + '\nupdate\n|html|<div class="broadcast-red"><b>A BATTLE PROCESS HAS CRASHED:</b> ' + ministack + '</div>');
+					process.send(data[0] + '\nupdate\n|html|<div class="broadcast-red"><b>A BATTLE PROCESS HAS CRASHED:</b> ' + ministack + '</div>');
 				} else {
-					process.client.send(data[0] + '\nupdate\n|html|<div class="broadcast-red"><b>The battle crashed!</b><br />Don\'t worry, we\'re working on fixing it.</div>');
+					process.send(data[0] + '\nupdate\n|html|<div class="broadcast-red"><b>The battle crashed!</b><br />Don\'t worry, we\'re working on fixing it.</div>');
 				}
 			}
 		}
@@ -3773,7 +3773,7 @@ var Battle = (function () {
 	// Simulator.prototype.receive in simulator.js (in another process).
 	Battle.prototype.send = function (type, data) {
 		if (Array.isArray(data)) data = data.join("\n");
-		process.client.send(this.id + "\n" + type + "\n" + data);
+		process.send(this.id + "\n" + type + "\n" + data);
 	};
 	// This function is called by this process's 'message' event.
 	Battle.prototype.receive = function (data, more) {
