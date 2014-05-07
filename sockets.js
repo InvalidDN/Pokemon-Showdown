@@ -11,20 +11,19 @@
  * @license MIT license
  */
 
-//var cluster = require('cluster');
+var cluster = require('cluster');
 var Config = require('./config/config');
-var fakeProcess = new (require('./fake-process').FakeProcess)();
 
-/*if (cluster.isMaster) {
+if (cluster.isMaster) {
 
 	cluster.setupMaster({
 		exec: 'sockets.js'
-	});*/
+	});
 
 	var workers = exports.workers = {};
 
 	var spawnWorker = exports.spawnWorker = function () {
-		var worker = fakeProcess.server;
+		var worker = cluster.fork({PSPORT: Config.port});
 		var id = worker.id;
 		workers[id] = worker;
 		worker.on('message', function (data) {
@@ -50,13 +49,13 @@ var fakeProcess = new (require('./fake-process').FakeProcess)();
 		});
 	};
 
-	//var workerCount = Config.workers || 1;
-	//for (var i = 0; i < workerCount; i++) {
+	var workerCount = Config.workers || 1;
+	for (var i = 0; i < workerCount; i++) {
 		spawnWorker();
-	//}
+	}
 
 	var killWorker = exports.killWorker = function (worker) {
-		/*var idd = worker.id + '-';
+		var idd = worker.id + '-';
 		var count = 0;
 		for (var connectionid in Users.connections) {
 			if (connectionid.substr(idd.length) === idd) {
@@ -69,18 +68,17 @@ var fakeProcess = new (require('./fake-process').FakeProcess)();
 			worker.kill();
 		} catch (e) {}
 		delete workers[worker.id];
-		return count;*/
-		return 0;
+		return count;
 	};
 
 	var killPid = exports.killPid = function (pid) {
-		/*pid = '' + pid;
+		pid = '' + pid;
 		for (var id in workers) {
 			var worker = workers[id];
 			if (pid === '' + worker.process.pid) {
 				return killWorker(worker);
 			}
-		}*/
+		}
 		return false;
 	};
 
@@ -106,7 +104,7 @@ var fakeProcess = new (require('./fake-process').FakeProcess)();
 		worker.send('-' + channelid + '\n' + socketid);
 	};
 
-//} else {
+} else {
 	// is worker
 
 	if (process.env.PSPORT) Config.port = +process.env.PSPORT;
@@ -127,9 +125,9 @@ var fakeProcess = new (require('./fake-process').FakeProcess)();
 	var Cidr = require('./cidr');
 
 	// graceful crash
-	/*process.on('uncaughtException', function (err) {
+	process.on('uncaughtException', function (err) {
 		require('./crashlogger.js')(err, 'Socket process ' + cluster.worker.id + ' (' + process.pid + ')');
-	});*/
+	});
 
 	var app = require('http').createServer();
 	var appssl;
@@ -225,7 +223,7 @@ var fakeProcess = new (require('./fake-process').FakeProcess)();
 		interval = setInterval(sweepClosedSockets, 1000 * 60 * 10);
 	}
 
-	fakeProcess.client.on('message', function (data) {
+	process.on('message', function (data) {
 		// console.log('worker received: ' + data);
 		var socket = null;
 		var socketid = null;
@@ -323,7 +321,7 @@ var fakeProcess = new (require('./fake-process').FakeProcess)();
 			}
 		}
 
-		fakeProcess.client.send('*' + socketid + '\n' + socket.remoteAddress);
+		process.send('*' + socketid + '\n' + socket.remoteAddress);
 
 		// console.log('CONNECT: ' + socket.remoteAddress + ' [' + socket.id + ']');
 		var interval;
@@ -344,14 +342,14 @@ var fakeProcess = new (require('./fake-process').FakeProcess)();
 			if (pipeIndex < 0 || pipeIndex === message.length - 1) return;
 			// drop legacy JSON messages
 			if (message.charAt(0) === '{') return;
-			fakeProcess.client.send('<' + socketid + '\n' + message);
+			process.send('<' + socketid + '\n' + message);
 		});
 
 		socket.on('close', function () {
 			if (interval) {
 				clearInterval(interval);
 			}
-			fakeProcess.client.send('!' + socketid);
+			process.send('!' + socketid);
 
 			delete sockets[socketid];
 			for (var channelid in channels) {
@@ -361,7 +359,7 @@ var fakeProcess = new (require('./fake-process').FakeProcess)();
 	});
 	server.installHandlers(app, {});
 	app.listen(Config.port);
-	console.log('Worker ' /*+ cluster.worker.id*/ + ' now listening on port ' + Config.port);
+	console.log('Worker ' + cluster.worker.id + ' now listening on port ' + Config.port);
 
 	if (appssl) {
 		server.installHandlers(appssl, {});
@@ -371,4 +369,4 @@ var fakeProcess = new (require('./fake-process').FakeProcess)();
 
 	console.log('Test your server at http://localhost:' + Config.port);
 
-//}
+}
