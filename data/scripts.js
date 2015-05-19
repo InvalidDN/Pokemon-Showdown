@@ -1384,33 +1384,115 @@ exports.BattleScripts = {
 
 			// First, the extra high-priority items
 
-			} else if (ability === 'Imposter') {
-				item = 'Choice Scarf';
 			} else if (hasMove["magikarpsrevenge"]) {
 				item = 'Choice Band';
 			} else if (ability === 'Wonder Guard') {
 				item = 'Focus Sash';
 			} else if (template.species === 'Unown') {
 				item = 'Choice Specs';
+			} else if (template.species === 'Latios') {
+				item = 'Latiosite';
+			} else if (template.species === 'Latias') {
+				item = 'Latiasite';
+			} else if (template.species === 'Blaziken') {
+				item = 'Blazikenite';
+			} else if (template.species === 'Lucario') {
+				item = 'Lucarionite';
+			} else if ((template.species === 'Absol') && Math.random()*2 > 1) {
+				item = 'Absolite';
+			} else if (template.species === 'Abomasnow') {
+				item = 'Abomasite';
+			} else if ((template.species === 'Aerodactyl') && !hasMove['taunt'] && !hasMove['stealthrock']) {
+				item = 'Aerodactylite';
+			} else if (template.species === 'Aggron') {
+				item = 'Aggronite';
+			} else if ((template.species === 'Alakazam') && !hasMove['trick']) {
+				item = 'Alakazite';
+			} else if ((template.species === 'Ampharos') && hasMove['dragonpulse']) {
+				item = 'Ampharosite';
+			} else if ((template.species === 'Banette') && !hasMove['destinybond']) {
+				item = 'Banettite';
+			} else if ((template.species === 'Blastoise') && (hasMove['waterpulse'] || hasMove['darkpulse'] || hasMove['aurasphere'])) {
+				item = 'Blastoisinite';
+			} else if (template.species === 'Garchomp') {
+				item = 'Garchompite';
+			} else if ((template.species === 'Gardevoir')&& (hasMove['echoedvoice'] || hasMove['hypervoice'])) {
+				item = 'Gardevoirite';
+			} else if (template.species === 'Gengar') {
+				item = 'Gengarite';
+			} else if ((template.species === 'Gyarados') && (hasMove['crunch'])) {
+				item = 'Gyaradosite';
+			} else if ((template.species === 'Heracross') && (hasMove['pinmissile'])) {
+				item = 'Heracronite';
+			} else if (template.species === 'Houndoom') {
+				item = 'Houndoominite';
+			} else if (template.species === 'Kangaskhan') {
+				item = 'Kangaskhanite';
+			} else if ((template.species === 'Manectric') && !hasMove['switcheroo'] ) {
+				item = 'Manectite';
+			} else if (template.species === 'Mawile') {
+				item = 'Mawilite';
+			} else if ((template.species === 'Medicham') && ability !== 'Swindler' ) {
+				item = 'Medichamite';
+			} else if ((template.species === 'Pinsir') && (hasMove['return'] || hasMove['quickattack']) )  {
+				item = 'Pinsirite';
+			} else if (template.species === 'Tyranitar') {
+				item = 'Tyranitarite';
+			} else if ((template.species === 'Venusaur') && hasMove['leechseed']) {
+				item = 'Venusaurite';
+			} else if ((template.species === 'Scizor') && (hasMove['swordsdance'] || hasMove['roost']) && Math.random()*2 > 1) {
+				item = 'Scizorite';
+			} else if ((template.species === 'Scizor') && hasMove['swordsdance'] && hasMove['roost']) {
+				item = 'Scizorite';
+			} else if ((template.species === 'Charizard') && (hasMove['flareblitz'] || hasMove['outrage']) && Math.random()*2 > 1) {
+				item = 'Charizardite X';
+			} else if ((template.species === 'Charizard') && Math.random()*2 > 1) {
+				item = 'Charizardite Y';
+			} else if ((template.species === 'Mewtwo') && (hasMove['drainpunch'] || hasMove['psychocut'])) {
+				item = 'Mewtwonite X';
+			} else if ((template.species === 'Mewtwo') && Math.random()*3 > 2) {
+				item = 'Mewtwonite Y';
+			} else if ((template.species === 'Shedinja') && ability === 'Sturdy') {
+				item = 'Lum Berry';
+			} else if ((template.species === 'Wynaut' || template.species === 'Wobbuffet') && hasMove['destinybond'] && Math.random()*2 > 1) {
+				item = 'Custap Berry';
 			} else if (hasMove['trick'] && hasMove['gyroball'] && (ability === 'Levitate' || hasType['Flying'])) {
 				item = 'Macho Brace';
 			} else if (hasMove['trick'] && hasMove['gyroball']) {
 				item = 'Iron Ball';
+			} else if (ability === 'Truant' || ability === 'Slow Start') {
+				item = 'Suppression Orb';
+			} else if (ability === 'Swindler') {
+			if (Math.random()*4 > 3) {
+				item = 'Choice Scarf';
+			} else if (Math.random()*3 > 2) {
+					item = 'Iron Ball';
+			} else if (Math.random()*2 > 1) {
+					item = 'Toxic Orb';
+			} else {
+					item = 'Flame Orb';
+			}
 			} else if (hasMove['trick'] || hasMove['switcheroo']) {
-				var randomNum = Math.random() * 2;
-				if (counter.Physical >= 3 && (template.baseStats.spe >= 95 || randomNum > 1)) {
+				var randomNum = Math.random()*2;
+				if (counter.Physical >= 3 && (template.baseStats.spe >= 95 || randomNum>1)) {
 					item = 'Choice Band';
-				} else if (counter.Special >= 3 && (template.baseStats.spe >= 95 || randomNum > 1)) {
+				} else if (counter.Special >= 3 && (template.baseStats.spe >= 95 || randomNum>1)) {
 					item = 'Choice Specs';
+				} else if ((ability !== 'Levitate' || hasType['Psychic'] || hasType['Flying']) && randomNum>1) {
+					item = 'Suppression Orb';
 				} else {
 					item = 'Choice Scarf';
 				}
-			} else if (hasMove['rest'] && !hasMove['sleeptalk'] && ability !== 'Natural Cure' && ability !== 'Shed Skin' && (ability !== 'Hydration' || !hasMove['raindance'])) {
+			} else if ((ability === 'Sniper') && hasMove['focusenergy']) {
+				item = 'Razor Claw';
+			} else if (ability === 'Super Luck'&& hasMove['nightslash']) {
+				item = 'Razor Claw';
+			} else if (hasMove['rest'] && !hasMove['sleeptalk'] && ability !== 'Natural Cure' && ability !== 'Shed Skin') {
 				item = 'Chesto Berry';
-			} else if (hasMove['naturalgift']) {
-				item = 'Liechi Berry';
 			} else if (hasMove['geomancy']) {
 				item = 'Power Herb';
+			} else if (hasMove['naturalgift']) {
+				item = 'Liechi Berry';
 			} else if (ability === 'Harvest') {
 				item = 'Sitrus Berry';
 			} else if (template.species === 'Cubone' || template.species === 'Marowak') {
@@ -1419,14 +1501,6 @@ exports.BattleScripts = {
 				item = 'Light Ball';
 			} else if (template.species === 'Clamperl') {
 				item = 'DeepSeaTooth';
-			} else if (template.species === 'Spiritomb') {
-				item = 'Leftovers';
-			} else if (template.species === 'Dusclops') {
-				item = 'Eviolite';
-			} else if (shouldMegaEvo === true) {
-				item = this.getTemplate((template.otherFormes[1]) ? template.otherFormes[Math.round(Math.random())] : template.otherFormes[0]).requiredItem;
-				// Mega Mawile should never start with Sheer Force
-				if (template.species === 'Mawile') ability = 'Intimidate';
 			} else if (hasMove['reflect'] && hasMove['lightscreen']) {
 				item = 'Light Clay';
 			} else if (hasMove['shellsmash']) {
@@ -1446,20 +1520,15 @@ exports.BattleScripts = {
 			} else if (ability === 'Sheer Force' || ability === 'Magic Guard') {
 				item = 'Life Orb';
 			} else if (ability === 'Unburden') {
-				item = 'Red Card';
-				// Give Unburden mons a Normal Gem if they have a Normal-type attacking move (except Explosion)
+				item = 'Starf Berry';
+				// Give Unburden mons a Normal Gem if they have a Normal-type attacking move
 				for (var m in moves) {
 					var move = this.getMove(moves[m]);
-					if (move.type === 'Normal' && (move.basePower || move.basePowerCallback) && move.id !== 'explosion') {
+					if (move.type === 'Normal' && (move.basePower || move.basePowerCallback)) {
 						item = 'Normal Gem';
 						break;
 					}
 				}
-
-			// medium priority
-
-			} else if (shouldMegaEvo) {
-				item = this.getTemplate((template.otherFormes[1]) ? template.otherFormes[Math.round(Math.random())] : template.otherFormes[0]).requiredItem;
 			} else if (ability === 'Guts') {
 				if (hasMove['drainpunch']) {
 					item = 'Flame Orb';
@@ -1468,7 +1537,7 @@ exports.BattleScripts = {
 				}
 				if ((hasMove['return'] || hasMove['hyperfang']) && !hasMove['facade']) {
 					// lol no
-					for (var j = 0; j < moves.length; j++) {
+					for (var j=0; j<moves.length; j++) {
 						if (moves[j] === 'Return' || moves[j] === 'HyperFang') {
 							moves[j] = 'Facade';
 							break;
@@ -1477,41 +1546,53 @@ exports.BattleScripts = {
 				}
 			} else if (ability === 'Marvel Scale' && hasMove['psychoshift']) {
 				item = 'Flame Orb';
-			} else if (hasMove['reflect'] || hasMove['lightscreen']) {
-				// less priority than if you'd had both
-				item = 'Light Clay';
 			} else if (counter.Physical >= 4 && !hasMove['fakeout'] && !hasMove['suckerpunch'] && !hasMove['flamecharge'] && !hasMove['rapidspin']) {
-				if (Math.random() * 3 > 1) {
+				if (Math.random()*3 > 1) {
 					item = 'Choice Band';
 				} else {
 					item = 'Expert Belt';
 				}
 			} else if (counter.Special >= 4) {
-				if (Math.random() * 3 > 1) {
+				if (Math.random()*3 > 1) {
 					item = 'Choice Specs';
 				} else {
 					item = 'Expert Belt';
 				}
-			} else if (this.getEffectiveness('Ground', template) >= 2 && !hasType['Poison'] && ability !== 'Levitate' && !hasMove['magnetrise']) {
+			} else if (this.getEffectiveness('Ground', template) >= 2 && ability !== 'Levitate'  && ability !== 'Gravitation' && !hasMove['magnetrise']) {
 				item = 'Air Balloon';
 			} else if ((hasMove['eruption'] || hasMove['waterspout']) && !counter['Status']) {
 				item = 'Choice Scarf';
+			} else if (hasMove['substitute'] && hasMove['reversal']) {
+				var shuffledMoves = moves.randomize();
+				for (var m in shuffledMoves) {
+					var move = this.getMove(shuffledMoves[m]);
+					if (move.basePower || move.basePowerCallback) {
+						item = move.type + ' Gem';
+						break;
+					}
+				}
+			} else if (template.nfe) {
+				item = 'Eviolite';
+			} else if (hasMove['reflect'] || hasMove['lightscreen']) {
+				// less priority than if you'd had both
+				item = 'Light Clay';
 			} else if (hasMove['substitute'] || hasMove['detect'] || hasMove['protect'] || ability === 'Moody') {
 				item = 'Leftovers';
 			} else if ((hasMove['flail'] || hasMove['reversal']) && !hasMove['endure'] && ability !== 'Sturdy') {
 				item = 'Focus Sash';
-			} else if (ability === 'Iron Barbs' || ability === 'Rough Skin') {
+			} else if (ability === 'Iron Barbs') {
+				// only Iron Barbs for now
 				item = 'Rocky Helmet';
-			} else if ((template.baseStats.hp + 75) * (template.baseStats.def + template.baseStats.spd + 175) > 60000 || template.species === 'Skarmory' || template.species === 'Forretress') {
+			} else if ((template.baseStats.hp+75)*(template.baseStats.def+template.baseStats.spd+175) > 60000 || template.species === 'Skarmory' || template.species === 'Forretress') {
 				// skarmory and forretress get exceptions for their typing
 				item = 'Leftovers';
-			} else if ((counter.Physical + counter.Special >= 3 || counter.Special >= 3) && setupType && ability !== 'Sturdy') {
+			} else if (counter.Physical + counter.Special >= 3 && setupType) {
 				item = 'Life Orb';
-			} else if (counter.Physical + counter.Special >= 4 && template.baseStats.def + template.baseStats.spd > 179) {
-				item = 'Assault Vest';
+			} else if (counter.Special >= 3 && setupType) {
+				item = 'Life Orb';
 			} else if (counter.Physical + counter.Special >= 4) {
 				item = 'Expert Belt';
-			} else if (i === 0 && ability !== 'Sturdy' && !counter['recoil'] && template.baseStats.def + template.baseStats.spd + template.baseStats.hp < 300) {
+			} else if (i===0 && ability !== 'Sturdy' && !counter['recoil']) {
 				item = 'Focus Sash';
 			} else if (hasMove['outrage']) {
 				item = 'Lum Berry';
@@ -1519,21 +1600,18 @@ exports.BattleScripts = {
 			// this is the "REALLY can't think of a good item" cutoff
 			// why not always Leftovers? Because it's boring. :P
 
-			} else if (counter.Physical + counter.Special >= 2 && template.baseStats.hp + template.baseStats.def + template.baseStats.spd > 315) {
-				item = 'Weakness Policy';
 			} else if (hasType['Flying'] || ability === 'Levitate') {
 				item = 'Leftovers';
-			} else if (this.getEffectiveness('Ground', template) >= 1 && !hasType['Poison'] && ability !== 'Levitate' && !hasMove['magnetrise']) {
+			} else if (this.getEffectiveness('Ground', template) >= 1 && ability !== 'Gravitation' && ability !== 'Levitate' && !hasMove['magnetrise']) {
 				item = 'Air Balloon';
 			} else if (hasType['Poison']) {
 				item = 'Black Sludge';
-			} else if (counter.Status <= 1 && ability !== 'Sturdy') {
+			} else if (counter.Status <= 1) {
 				item = 'Life Orb';
 			} else {
 				item = 'Leftovers';
 			}
 
-			// For Trick / Switcheroo
 			if (item === 'Leftovers' && hasType['Poison']) {
 				item = 'Black Sludge';
 			}
@@ -1541,20 +1619,15 @@ exports.BattleScripts = {
 
 		// 95-86-82-78-74-70
 		var levelScale = {
-			LC: 95,
-			NFE: 90,
-			'LC Uber': 86,
+			LC: 89,
+			NFE: 87,
+			'LC Uber': 88,
 			NU: 86,
 			BL3: 84,
 			RU: 82,
 			BL2: 80,
 			UU: 78,
 			BL: 76,
-
-			'Limbo': 86,
-			'Limbo C': 83,
-			'Limbo B': 80,
-			'Limbo A': 77,
 
 			OU: 74,
 			CAP: 74,
@@ -1563,25 +1636,9 @@ exports.BattleScripts = {
 		};
 		var customScale = {
 			// Really bad Pokemon and jokemons
-			Azurill: 99, Burmy: 99, Cascoon: 99, Caterpie: 99, Cleffa: 99, Combee: 99, Feebas: 99, Igglybuff: 99, Happiny: 99, Hoppip: 99,
-			Kakuna: 99, Kricketot: 99, Ledyba: 99, Magikarp: 99, Metapod: 99, Pichu: 99, Ralts: 99, Sentret: 99, Shedinja: 99,
-			Silcoon: 99, Slakoth: 99, Sunkern: 99, Tynamo: 99, Tyrogue: 99, Unown: 99, Weedle: 99, Wurmple: 99, Zigzagoon: 99,
-			Clefairy: 95, Delibird: 95, "Farfetch'd": 95, Jigglypuff: 95, Kirlia: 95, Ledian: 95, Luvdisc: 95, Marill: 95, Skiploom: 95,
-			Pachirisu: 90,
+			Shedinja: 70, Sunkern: 150, Unown: 99, "Farfetch'd": 95, Luvdisc: 95, Kangaskhan: 70, Houndoom: 74, Charizard: 74, Ampharos: 78,
+			Absol: 78, Blastoise: 74, Mawile: 78, Aggron: 74, Manectric: 74, Gengar: 70, Aerodactyl: 82
 
-			// Eviolite
-			Ferroseed: 95, Misdreavus: 95, Munchlax: 95, Murkrow: 95, Natu: 95,
-			Gligar: 90, Metang: 90, Monferno: 90, Roselia: 90, Seadra: 90, Togetic: 90, Wartortle: 90, Whirlipede: 90,
-			Dusclops: 84, Porygon2: 82, Chansey: 78,
-
-			// Weather or teammate dependent
-			Snover: 95, Vulpix: 95, Ninetales: 78, Tentacruel: 78, Toxicroak: 78,
-
-			// Banned mega
-			Kangaskhan: 72, Gengar: 72, Blaziken: 72,
-
-			// Holistic judgment
-			Carvanha: 90, Lucario: 72, Genesect: 72, Kyurem: 78
 		};
 		var level = levelScale[template.tier] || 90;
 		if (customScale[template.name]) level = customScale[template.name];

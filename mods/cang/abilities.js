@@ -3,6 +3,8 @@ exports.BattleAbilities = {
 		desc: "When this Pokemon enters the battlefield, it uses trick room.",
 		shortDesc: "On switch-in, this Pokemon summons Trick Room.",
 		onStart: function(source) {
+			this.clearWeather();
+			this.weatherData.duration = 0;
 			this.setWeather('Trickroom');
 		},
 		id: "distortion",
@@ -14,12 +16,66 @@ exports.BattleAbilities = {
 		desc: "When this Pokemon enters the battlefield, it uses Gravity.",
 		shortDesc: "On switch-in, this Pokemon summons Gravity.",
 		onStart: function(source) {
+			this.clearWeather();
+			this.weatherData.duration = 0;
 			this.setWeather('Gravity');
 		},
 		id: "gravitation",
 		name: "Gravitation",
 		rating: 5,
 		num: 201
+	},
+	"drizzle": {
+		desc: "When this Pokemon enters the battlefield, the weather becomes Rain Dance (for 5 turns normally, or 8 turns while holding Damp Rock).",
+		shortDesc: "On switch-in, the weather becomes Rain Dance.",
+		onStart: function (source) {
+			this.clearWeather();
+			this.weatherData.duration = 0;
+			this.setWeather('raindance');
+		},
+		id: "drizzle",
+		name: "Drizzle",
+		rating: 5,
+		num: 2
+	},
+	"drought": {
+		desc: "When this Pokemon enters the battlefield, the weather becomes Sunny Day (for 5 turns normally, or 8 turns while holding Heat Rock).",
+		shortDesc: "On switch-in, the weather becomes Sunny Day.",
+		onStart: function (source) {
+			this.clearWeather();
+			this.weatherData.duration = 0;
+			this.setWeather('sunnyday');
+		},
+		id: "drought",
+		name: "Drought",
+		rating: 5,
+		num: 70
+	},
+	"sandstream": {
+		desc: "When this Pokemon enters the battlefield, the weather becomes Sandstorm (for 5 turns normally, or 8 turns while holding Smooth Rock).",
+		shortDesc: "On switch-in, the weather becomes Sandstorm.",
+		onStart: function (source) {
+			this.clearWeather();
+			this.weatherData.duration = 0;
+			this.setWeather('sandstorm');
+		},
+		id: "sandstream",
+		name: "Sand Stream",
+		rating: 4.5,
+		num: 45
+	},
+	"snowwarning": {
+		desc: "When this Pokemon enters the battlefield, the weather becomes Hail (for 5 turns normally, or 8 turns while holding Icy Rock).",
+		shortDesc: "On switch-in, the weather becomes Hail.",
+		onStart: function (source) {
+			this.clearWeather();
+			this.weatherData.duration = 0;
+			this.setWeather('hail');
+		},
+		id: "snowwarning",
+		name: "Snow Warning",
+		rating: 4,
+		num: 117
 	},
 	"niflheim": {
 		desc: "Raises the power of Ice-type moves by 60% while a Hail is in effect. It also gives the user immunity to damage from Hail.",
@@ -169,7 +225,7 @@ exports.BattleAbilities = {
 		desc: "When entering a battle, this pokemon clears all weather conditions.",
 		shortDesc: "When entering a battle, this pokemon clears all weather conditions.",
 		onStart: function(pokemon) {
-			this.add('-message', 'The effects of weather disappeared. (placeholder)');
+			this.add('-message', 'Get your yuppie ass weather out of here.');
 			this.clearWeather();
 			this.weatherData.duration = 0;
 		},

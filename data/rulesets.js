@@ -21,6 +21,44 @@ exports.BattleFormats = {
 		ruleset: ['Sleep Clause Mod', 'Species Clause', 'Moody Clause', 'OHKO Clause', 'Endless Battle Clause', 'HP Percentage Mod'],
 		banlist: ['Unreleased', 'Illegal', 'Leavanny + Knock Off + Sticky Web', 'Sylveon + Hyper Voice + Heal Bell + Wish + Baton Pass']
 	},
+	standard5: {
+		effectType: 'Banlist',
+		ruleset: ['Sleep Clause Mod', 'Species Clause', 'OHKO Clause', 'Moody Clause', 'Evasion Moves Clause', 'Evasion Abilities Clause', 'HP Percentage Mod', 'haxitems', 'banubercombos5', 'freezeclause'],
+		banlist: ['Unreleased', 'Illegal']
+	},
+	standardpokebank: {
+		effectType: 'Banlist',
+		ruleset: ['Sleep Clause Mod', 'Species Clause', 'Moody Clause', 'OHKO Clause', 'Evasion Moves Clause', 'Evasion Abilities Clause', 'HP Percentage Mod', 'haxitems', 'banubercombos', 'freezeclause'],
+		banlist: ['Illegal']
+	},
+	banubercombos: {
+		effectType: 'Banlist',
+		banlist: ['Illegal', 'Swagger']
+	},
+	ubermegatites: {
+		effectType: 'Banlist',
+		banlist: ['Kangaskhanite', 'Gengarite', 'Lucarionite']
+	},
+	standardmegatites: {
+		effectType: 'Banlist',
+		banlist: ['Aggronite', 'Blatoisinite', 'Charizardite X', 'Charizardite Y', 'Houndoomite', 'Lucarionite', 'Manectricite']
+	},
+	creativemegatites: {
+		effectType: 'Banlist',
+		banlist: ['Mawilite', 'Ampharosite', 'Gardevoirite', 'Absolite']
+	},
+	inspiredmegatites: {
+		effectType: 'Banlist',
+		banlist: ['Aerodactylite']
+	},
+	haxitems: {
+		effectType: 'Banlist',
+		banlist: ['Focus Band' ,'Bright Powder' ,'Kings Rock' ,'Quick Claw', 'Razor Fang']
+	},
+	banubercombos5: {
+		effectType: 'Banlist',
+		banlist: ['Illegal', 'Drizzle ++ Swift Swim ++ Kingdra', 'Drizzle ++ Swift Swim ++ Ludicolo', 'Drizzle ++ Swift Swim ++ Omastar', 'Drizzle ++ Swift Swim ++ Kabutops', 'Drizzle ++ Swift Swim ++ Ludicolo', 'Drizzle ++ Swift Swim ++ Gorebyss', 'Drizzle ++ Swift Swim ++ Huntail', 'Drizzle ++ Swift Swim ++ Floatzel', 'Drizzle ++ Swift Swim ++ Carracosta', 'Dragonite+Multiscale', 'Excadrill ++ Sandrush ++ Sand Stream', 'Chandelure+Shadow Tag', 'Speed Boost+Blaziken', 'Prankster+Thundurus']
+	},
 	standardgbu: {
 		effectType: 'Banlist',
 		ruleset: ['Species Clause', 'Item Clause'],

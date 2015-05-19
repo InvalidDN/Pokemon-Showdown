@@ -4512,7 +4512,7 @@ exports.BattleFormatsData = {
 	bisharp: {
 		viableMoves: {"swordsdance":1,"substitute":1,"suckerpunch":1,"ironhead":1,"brickbreak":1,"nightslash":1},
 		dreamWorldRelease: true,
-		tier: "NU"
+		tier: "RU"
 	},
 	bouffalant: {
 		viableMoves: {"headcharge":1,"lick":1,"rest":1,"sleeptalk":1,"swordsdance":1},
