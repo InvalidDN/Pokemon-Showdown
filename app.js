@@ -48,98 +48,65 @@
 // aren't
 
 function runNpm(command) {
-	console.log('Running `npm ' + command + '`...');
-	var child_process = require('child_process');
-	var npm = child_process.spawn('npm', [command]);
-	npm.stdout.on('data', function (data) {
-		process.stdout.write(data);
-	});
-	npm.stderr.on('data', function (data) {
-		process.stderr.write(data);
-	});
-	npm.on('close', function (code) {
-		if (!code) {
-			child_process.fork('app.js').disconnect();
-		}
-	});
+	if (require.main !== module) throw new Error("Dependencies unmet");
+
+	command = 'npm ' + command + ' && ' + process.execPath + ' app.js';
+	console.log('Running `' + command + '`...');
+	require('child_process').spawn('sh', ['-c', command], {stdio: 'inherit', detached: true});
+	process.exit(0);
 }
 
-try {
-	require('sugar');
-} catch (e) {
-	return runNpm('install');
-}
-if (!Object.select) {
-	return runNpm('update');
-}
-
-// Make sure config.js exists, and copy it over from config-example.js
-// if it doesn't
+var isLegacyEngine = !global.Map;
 
 var fs = require('fs');
-
-// Synchronously, since it's needed before we can start the server
-if (!fs.existsSync('./config/config.js')) {
-	console.log("config.js doesn't exist - creating one with default settings...");
-	fs.writeFileSync('./config/config.js',
-		fs.readFileSync('./config/config-example.js')
-	);
+var path = require('path');
+try {
+	require('sugar');
+	if (isLegacyEngine) require('es6-shim');
+} catch (e) {
+	runNpm('install --production');
+}
+if (isLegacyEngine && !new Map().set()) {
+	runNpm('update --production');
 }
 
 /*********************************************************
  * Load configuration
  *********************************************************/
 
-global.Config = require('./config/config.js');
+try {
+	global.Config = require('./config/config.js');
+} catch (err) {
+	if (err.code !== 'MODULE_NOT_FOUND') throw err;
 
-global.reloadCustomAvatars = function () {
-	var path = require('path');
-	var newCustomAvatars = {};
-	fs.readdirSync('./config/avatars').forEach(function (file) {
-		var ext = path.extname(file);
-		if (ext !== '.png' && ext !== '.gif')
-			return;
-
-		var user = toId(path.basename(file, ext));
-		newCustomAvatars[user] = file;
-		delete Config.customAvatars[user];
-	});
-
-	// Make sure the manually entered avatars exist
-	for (var a in Config.customAvatars)
-		if (typeof Config.customAvatars[a] === 'number')
-			newCustomAvatars[a] = Config.customAvatars[a];
-		else
-			fs.exists('./config/avatars/' + Config.customAvatars[a], (function (user, file, isExists) {
-				if (isExists)
-					Config.customAvatars[user] = file;
-			}).bind(null, a, Config.customAvatars[a]));
-
-	Config.customAvatars = newCustomAvatars;
+	// Copy it over synchronously from config-example.js since it's needed before we can start the server
+	console.log("config.js doesn't exist - creating one with default settings...");
+	fs.writeFileSync(path.resolve(__dirname, 'config/config.js'),
+		fs.readFileSync(path.resolve(__dirname, 'config/config-example.js'))
+	);
+	global.Config = require('./config/config.js');
 }
 
-var watchFile = function () {
-	try {
-		return fs.watchFile.apply(fs, arguments);
-	} catch (e) {
-		console.log('Your version of node does not support `fs.watchFile`');
-	}
-};
-
-if (Config.watchConfig) {
-	watchFile('./config/config.js', function (curr, prev) {
+if (Config.watchconfig) {
+	fs.watchFile(path.resolve(__dirname, 'config/config.js'), function (curr, prev) {
 		if (curr.mtime <= prev.mtime) return;
 		try {
 			delete require.cache[require.resolve('./config/config.js')];
-			Config = require('./config/config.js');
-			reloadCustomAvatars();
+			global.Config = require('./config/config.js');
+			if (global.Users) Users.cacheGroupData();
 			console.log('Reloaded config/config.js');
 		} catch (e) {}
 	});
 }
 
-if (process.argv[2] && parseInt(process.argv[2])) {
+// Autoconfigure the app when running in cloud hosting environments:
+var cloudenv = require('cloud-env');
+Config.bindaddress = cloudenv.get('IP', Config.bindaddress || '');
+Config.port = cloudenv.get('PORT', Config.port);
+
+if (require.main === module && process.argv[2] && parseInt(process.argv[2])) {
 	Config.port = parseInt(process.argv[2]);
+	Config.ssl = null;
 }
 
 global.ResourceMonitor = {
@@ -161,7 +128,17 @@ global.ResourceMonitor = {
 	 */
 	log: function (text) {
 		console.log(text);
-		if (Rooms.rooms.staff) Rooms.rooms.staff.add('||' + text);
+		if (Rooms.rooms.staff) {
+			Rooms.rooms.staff.add('||' + text);
+			Rooms.rooms.staff.update();
+		}
+	},
+	logHTML: function (text) {
+		console.log(text);
+		if (Rooms.rooms.staff) {
+			Rooms.rooms.staff.add('|html|' + text);
+			Rooms.rooms.staff.update();
+		}
 	},
 	countConnection: function (ip, name) {
 		var now = Date.now();
@@ -169,10 +146,18 @@ global.ResourceMonitor = {
 		name = (name ? ': ' + name : '');
 		if (ip in this.connections && duration < 30 * 60 * 1000) {
 			this.connections[ip]++;
-			if (duration < 5 * 60 * 1000 && this.connections[ip] % 20 === 0) {
+			if (this.connections[ip] < 500 && duration < 5 * 60 * 1000 && this.connections[ip] % 30 === 0) {
 				this.log('[ResourceMonitor] IP ' + ip + ' has connected ' + this.connections[ip] + ' times in the last ' + duration.duration() + name);
-			} else if (this.connections[ip] % 60 === 0) {
+			} else if (this.connections[ip] < 500 && this.connections[ip] % 90 === 0) {
 				this.log('[ResourceMonitor] IP ' + ip + ' has connected ' + this.connections[ip] + ' times in the last ' + duration.duration() + name);
+			} else if (this.connections[ip] === 500) {
+				this.log('[ResourceMonitor] IP ' + ip + ' has been banned for connection flooding (' + this.connections[ip] + ' times in the last ' + duration.duration() + name + ')');
+				return true;
+			} else if (this.connections[ip] > 500) {
+				if (this.connections[ip] % 250 === 0) {
+					this.log('[ResourceMonitor] Banned IP ' + ip + ' has connected ' + this.connections[ip] + ' times in the last ' + duration.duration() + name);
+				}
+				return true;
 			}
 		} else {
 			this.connections[ip] = 1;
@@ -231,7 +216,7 @@ global.ResourceMonitor = {
 		for (var i in this.networkUse) {
 			buf += '' + this.networkUse[i] + '\t' + this.networkCount[i] + '\t' + i + '\n';
 		}
-		fs.writeFile('logs/networkuse.tsv', buf);
+		fs.writeFile(path.resolve(__dirname, 'logs/networkuse.tsv'), buf);
 	},
 	clearNetworkUse: function () {
 		this.networkUse = {};
@@ -250,9 +235,9 @@ global.ResourceMonitor = {
 			if (typeof value === 'boolean') bytes += 4;
 			else if (typeof value === 'string') bytes += value.length * 2;
 			else if (typeof value === 'number') bytes += 8;
-			else if (typeof value === 'object' && objectList.indexOf( value ) === -1) {
-				objectList.push( value );
-				for (var i in value) stack.push( value[ i ] );
+			else if (typeof value === 'object' && objectList.indexOf(value) < 0) {
+				objectList.push(value);
+				for (var i in value) stack.push(value[i]);
 			}
 		}
 
@@ -340,17 +325,6 @@ global.toName = function (name) {
 };
 
 /**
- * Escapes a string for HTML
- * If strEscape is true, escapes it for JavaScript, too
- */
-global.sanitize = function (str, strEscape) {
-	str = ('' + (str || ''));
-	str = str.escapeHTML();
-	if (strEscape) str = str.replace(/'/g, '\\\'');
-	return str;
-};
-
-/**
  * Safely ensures the passed variable is a string
  * Simply doing '' + str can crash if str.toString crashes or isn't a function
  * If we're expecting a string and being given anything that isn't a string
@@ -363,11 +337,6 @@ global.string = function (str) {
 
 global.LoginServer = require('./loginserver.js');
 
-watchFile('./config/custom.css', function (curr, prev) {
-	LoginServer.request('invalidatecss', {}, function () {});
-});
-LoginServer.request('invalidatecss', {}, function () {});
-
 global.Users = require('./users.js');
 
 global.Rooms = require('./rooms.js');
@@ -379,32 +348,34 @@ global.CommandParser = require('./command-parser.js');
 
 global.Simulator = require('./simulator.js');
 
-global.Tournaments = require('./tournaments/frontend.js');
+global.Tournaments = require('./tournaments');
 
 try {
 	global.Dnsbl = require('./dnsbl.js');
 } catch (e) {
-	global.Dnsbl = {query:function (){}};
+	global.Dnsbl = {query:function () {}};
 }
 
 global.Cidr = require('./cidr.js');
 
-// graceful crash - allow current battles to finish before restarting
-var lastCrash = 0;
-process.on('uncaughtException', function (err) {
-	var dateNow = Date.now();
-	var quietCrash = require('./crashlogger.js')(err, 'The main process');
-	quietCrash = quietCrash || ((dateNow - lastCrash) <= 1000 * 60 * 5);
-	lastCrash = Date.now();
-	if (quietCrash) return;
-	var stack = ("" + err.stack).split("\n").slice(0, 2).join("<br />");
-	if (Rooms.lobby) {
-		Rooms.lobby.addRaw('<div class="broadcast-red"><b>THE SERVER HAS CRASHED:</b> ' + stack + '<br />Please restart the server.</div>');
-		Rooms.lobby.addRaw('<div class="broadcast-red">You will not be able to talk in the lobby or start new battles until the server restarts.</div>');
-	}
-	Config.modchat = 'crash';
-	Rooms.global.lockdown = true;
-});
+if (Config.crashguard) {
+	// graceful crash - allow current battles to finish before restarting
+	var lastCrash = 0;
+	process.on('uncaughtException', function (err) {
+		var dateNow = Date.now();
+		var quietCrash = require('./crashlogger.js')(err, 'The main process');
+		quietCrash = quietCrash || ((dateNow - lastCrash) <= 1000 * 60 * 5);
+		lastCrash = Date.now();
+		if (quietCrash) return;
+		var stack = ("" + err.stack).escapeHTML().split("\n").slice(0, 2).join("<br />");
+		if (Rooms.lobby) {
+			Rooms.lobby.addRaw('<div class="broadcast-red"><b>THE SERVER HAS CRASHED:</b> ' + stack + '<br />Please restart the server.</div>');
+			Rooms.lobby.addRaw('<div class="broadcast-red">You will not be able to talk in the lobby or start new battles until the server restarts.</div>');
+		}
+		Config.modchat = 'crash';
+		Rooms.global.lockdown = true;
+	});
+}
 
 /*********************************************************
  * Start networking processes to be connected to
@@ -428,14 +399,14 @@ Rooms.global.formatListText = Rooms.global.getFormatListText();
 global.TeamValidator = require('./team-validator.js');
 
 // load ipbans at our leisure
-fs.readFile('./config/ipbans.txt', function (err, data) {
+fs.readFile(path.resolve(__dirname, 'config/ipbans.txt'), function (err, data) {
 	if (err) return;
 	data = ('' + data).split("\n");
 	var rangebans = [];
 	for (var i = 0; i < data.length; i++) {
 		data[i] = data[i].split('#')[0].trim();
 		if (!data[i]) continue;
-		if (data[i].indexOf('/') >= 0) {
+		if (data[i].includes('/')) {
 			rangebans.push(data[i]);
 		} else if (!Users.bannedIps[data[i]]) {
 			Users.bannedIps[data[i]] = '#ipban';
@@ -444,15 +415,8 @@ fs.readFile('./config/ipbans.txt', function (err, data) {
 	Users.checkRangeBanned = Cidr.checker(rangebans);
 });
 
-reloadCustomAvatars();
+/*********************************************************
+ * Start up the REPL server
+ *********************************************************/
 
-global.Spamroom = require('./spamroom.js');
-
-fs.readFile('./logs/uptime.txt', function (err, uptime) {
-	if (!err) global.uptimeRecord = parseInt(uptime, 10);
-	global.uptimeRecordInterval = setInterval(function () {
-		if (global.uptimeRecord && process.uptime() <= global.uptimeRecord) return;
-		global.uptimeRecord = process.uptime();
-		fs.writeFile('./logs/uptime.txt', global.uptimeRecord.toFixed(0));
-	}, (1).hour());
-});
+require('./repl.js').start('app', function (cmd) { return eval(cmd); });

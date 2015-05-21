@@ -65,15 +65,15 @@ exports.BattleScripts = {
 		// Venusaur
 		this.modData('Pokedex', 'venusaur').abilities['1'] = 'Leaf Guard';
 		// Charizard
-		this.modData('Pokedex', 'charizard').abilities['1'] = 'Flash Fire';
+		this.modData('Pokedex', 'charizard').abilities['1'] = 'Flame Body';
 		// Blastoise
 		this.modData('Pokedex', 'blastoise').abilities['1'] = 'Shell Armor';
 		// Meganium
 		this.modData('Pokedex', 'meganium').abilities['1'] = 'Harvest';
 		// Typhlosion
-		this.modData('Pokedex', 'typhlosion').abilities['1'] = 'Flame Body';
+		this.modData('Pokedex', 'typhlosion').abilities['1'] = 'Magma Armor';
 		// Feraligatr
-		this.modData('Pokedex', 'feraligatr').abilities['1'] = 'Intimidate';
+		this.modData('Pokedex', 'feraligatr').abilities['1'] = 'Strong Jaw';
 		// Sceptile
 		this.modData('Pokedex', 'sceptile').abilities['1'] = 'Limber';
 		// Blaziken
@@ -92,10 +92,16 @@ exports.BattleScripts = {
 		this.modData('Pokedex', 'emboar').abilities['1'] = 'Sheer Force';
 		// Samurott
 		this.modData('Pokedex', 'samurott').abilities['1'] = 'Technician';
+		// Chesnaught
+		this.modData('Pokedex', 'chesnaught').abilities['1'] = 'Battle Armor';
+		// Delphox
+		this.modData('Pokedex', 'delphox').abilities['1'] = 'Magic Guard';
+		// Greninja
+		this.modData('Pokedex', 'greninja').abilities['1'] = 'Pickpocket';
 
 		// Levitate mons
 		this.modData('Pokedex', 'unown').abilities['1'] = 'Shadow Tag';
-		this.modData('Pokedex', 'flygon').abilities['1'] = 'Compoundeyes';
+		this.modData('Pokedex', 'flygon').abilities['1'] = 'Compound Eyes';
 		this.modData('Pokedex', 'flygon').abilities['H'] = 'Sand Rush';
 		this.modData('Pokedex', 'weezing').abilities['1'] = 'Aftermath';
 		this.modData('Pokedex', 'eelektross').abilities['1'] = 'Poison Heal';
@@ -103,10 +109,17 @@ exports.BattleScripts = {
 		this.modData('Pokedex', 'gengar').abilities['1'] = 'Cursed Body';
 		this.modData('Pokedex', 'mismagius').abilities['1'] = 'Cursed Body';
 		this.modData('Pokedex', 'cryogonal').abilities['1'] = 'Ice Body';
+		this.modData('Pokedex', 'mesprit').abilities['1'] = 'Serene Grace';
+		this.modData('Pokedex', 'uxie').abilities['1'] = 'Synchronize';
+		this.modData('Pokedex', 'azelf').abilities['1'] = 'Steadfast';
+		this.modData('Pokedex', 'hydreigon').abilities['1'] = 'Sheer Force';
 
-		// Every DW ability becomes released
+		// Adaptability change
+		this.modData('Pokedex', 'crawdaunt').abilities['H'] = 'Tough Claws';
+
+		// Every hidden ability becomes released
 		for (var i in this.data.FormatsData) {
-			this.modData('FormatsData', i).dreamWorldRelease = true;
+			this.modData('FormatsData', i).unreleasedHidden = false;
 		}
 	}
 };

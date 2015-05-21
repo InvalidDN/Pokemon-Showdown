@@ -1,5 +1,3 @@
-require('es6-shim');
-
 var TreeNode = require('./lib/closure-goog.structs.TreeNode-c8e0b2dcd892.min.js').goog.structs.TreeNode;
 
 const nameMap = {
@@ -19,9 +17,10 @@ function fixSingleChildNode(parentNode) {
 		return newNode;
 	}
 
-	var value = parentNode.getValue()
-	for (var key in value)
+	var value = parentNode.getValue();
+	for (var key in value) {
 		delete value[key];
+	}
 	Object.merge(value, parentNode.removeChildAt(0).getValue());
 	return parentNode;
 }
@@ -29,35 +28,34 @@ function fixSingleChildNode(parentNode) {
 var Elimination = (function () {
 	function Elimination(maxSubtrees) {
 		maxSubtrees = maxSubtrees || 1;
-		if (typeof maxSubtrees === 'string' && maxSubtrees.toLowerCase() === 'infinity')
+		if (typeof maxSubtrees === 'string' && maxSubtrees.toLowerCase() === 'infinity') {
 			maxSubtrees = Infinity;
-		else if (typeof maxSubtrees !== 'number')
+		} else if (typeof maxSubtrees !== 'number') {
 			maxSubtrees = parseInt(maxSubtrees, 10);
-		if (!maxSubtrees || maxSubtrees < 1)
-			maxSubtrees = 1;
+		}
+		if (!maxSubtrees || maxSubtrees < 1) maxSubtrees = 1;
 
 		this.maxSubtrees = maxSubtrees;
 		this.isBracketFrozen = false;
 		this.tree = null;
 		this.users = new Map();
 
-		if (nameMap[maxSubtrees])
+		if (nameMap[maxSubtrees]) {
 			this.name = nameMap[maxSubtrees] + " " + this.name;
-		else if (maxSubtrees === Infinity)
+		} else if (maxSubtrees === Infinity) {
 			this.name = "N-" + this.name;
-		else
+		} else {
 			this.name = maxSubtrees + "-tuple " + this.name;
-	};
+		}
+	}
 
 	Elimination.prototype.name = "Elimination";
 	Elimination.prototype.isDrawingSupported = false;
 
 	Elimination.prototype.addUser = function (user) {
-		if (this.isBracketFrozen)
-			return 'BracketFrozen';
+		if (this.isBracketFrozen) return 'BracketFrozen';
 
-		if (this.users.has(user))
-			return 'UserAlreadyAdded';
+		if (this.users.has(user)) return 'UserAlreadyAdded';
 		this.users.set(user, {});
 
 		if (!this.tree) {
@@ -88,23 +86,22 @@ var Elimination = (function () {
 		}
 	};
 	Elimination.prototype.removeUser = function (user) {
-		if (this.isBracketFrozen)
-			return 'BracketFrozen';
+		if (this.isBracketFrozen) return 'BracketFrozen';
 
-		if (!this.users.has(user))
-			return 'UserNotAdded';
+		if (!this.users.has(user)) return 'UserNotAdded';
 		this.users.delete(user);
 
 		var targetNode;
-		for (var n = 0; n < this.tree.currentLayerLeafNodes.length && !targetNode; ++n)
+		for (var n = 0; n < this.tree.currentLayerLeafNodes.length && !targetNode; ++n) {
 			if (this.tree.currentLayerLeafNodes[n].getValue().user === user) {
 				targetNode = this.tree.currentLayerLeafNodes[n];
 				this.tree.currentLayerLeafNodes.splice(n, 1);
 			}
+		}
 		if (targetNode) {
-			if (this.users.size === 0)
+			if (this.users.size === 0) {
 				this.tree = null;
-			else if (this.tree.nextLayerLeafNodes.length === 0) {
+			} else if (this.tree.nextLayerLeafNodes.length === 0) {
 				this.tree.nextLayerLeafNodes = this.tree.currentLayerLeafNodes;
 
 				var parentNode = targetNode.getParent();
@@ -125,38 +122,42 @@ var Elimination = (function () {
 			return;
 		}
 
-		for (var n = 0; n < this.tree.nextLayerLeafNodes.length && !targetNode; ++n)
+		for (var n = 0; n < this.tree.nextLayerLeafNodes.length && !targetNode; ++n) {
 			if (this.tree.nextLayerLeafNodes[n].getValue().user === user) {
 				targetNode = this.tree.nextLayerLeafNodes[n];
 				this.tree.nextLayerLeafNodes.splice(n, 1);
 			}
+		}
 		var parentNode = targetNode.getParent();
 		parentNode.removeChild(targetNode);
 		this.tree.nextLayerLeafNodes.splice(this.tree.nextLayerLeafNodes.indexOf(parentNode.getChildAt(0)), 1);
 		this.tree.currentLayerLeafNodes.push(fixSingleChildNode(parentNode));
 	};
 	Elimination.prototype.replaceUser = function (user, replacementUser) {
-		if (!this.users.has(user))
-			return 'UserNotAdded';
+		if (!this.users.has(user)) return 'UserNotAdded';
 
-		if (this.users.has(replacementUser))
-			return 'UserAlreadyAdded';
+		if (this.users.has(replacementUser)) return 'UserAlreadyAdded';
 
 		this.users.delete(user);
 		this.users.set(user, {});
 
 		var targetNode;
-		for (var n = 0; n < this.tree.currentLayerLeafNodes.length && !targetNode; ++n)
-			if (this.tree.currentLayerLeafNodes[n].getValue().user === user)
+		for (var n = 0; n < this.tree.currentLayerLeafNodes.length && !targetNode; ++n) {
+			if (this.tree.currentLayerLeafNodes[n].getValue().user === user) {
 				targetNode = this.tree.currentLayerLeafNodes[n];
-		for (var n = 0; n < this.tree.nextLayerLeafNodes.length && !targetNode; ++n)
-			if (this.tree.nextLayerLeafNodes[n].getValue().user === user)
+			}
+		}
+		for (var n = 0; n < this.tree.nextLayerLeafNodes.length && !targetNode; ++n) {
+			if (this.tree.nextLayerLeafNodes[n].getValue().user === user) {
 				targetNode = this.tree.nextLayerLeafNodes[n];
+			}
+		}
 		targetNode.getValue().user = replacementUser;
 	};
-	Elimination.prototype.getUsers = function () {
+	Elimination.prototype.getUsers = function (remaining) {
 		var users = [];
 		this.users.forEach(function (value, key) {
+			if (remaining && (value.isEliminated || value.isDisqualified)) return;
 			users.push(key);
 		});
 		return users;
@@ -173,9 +174,9 @@ var Elimination = (function () {
 				frame.toNode.children.push(node);
 
 				var fromNodeValues = frame.fromNode.getValue();
-				if (frame.fromNode.isLeaf())
+				if (frame.fromNode.isLeaf()) {
 					node.team = fromNodeValues.user || null;
-				else {
+				} else {
 					node.state = fromNodeValues.state || 'unavailable';
 					if (node.state === 'finished') {
 						node.team = fromNodeValues.user;
@@ -203,16 +204,15 @@ var Elimination = (function () {
 			user.loseCount = 0;
 		});
 
-		for (var t = 1; t < this.maxSubtrees && t < this.users.size - 1; ++t) {
+		this.maxSubtrees = Math.min(this.maxSubtrees, this.users.size - 1);
+		for (var t = 1; t < this.maxSubtrees; ++t) {
 			var matchesByDepth = {};
 			var queue = [{node: this.tree.tree, depth: 0}];
 			while (queue.length > 0) {
 				var frame = queue.shift();
-				if (frame.node.isLeaf() || frame.node.getValue().onLoseNode)
-					continue;
+				if (frame.node.isLeaf() || frame.node.getValue().onLoseNode) continue;
 
-				if (!matchesByDepth[frame.depth])
-					matchesByDepth[frame.depth] = [];
+				if (!matchesByDepth[frame.depth]) matchesByDepth[frame.depth] = [];
 				matchesByDepth[frame.depth].push(frame.node);
 
 				queue.push({node: frame.node.getChildAt(0), depth: frame.depth + 1});
@@ -227,8 +227,7 @@ var Elimination = (function () {
 			newTree.currentLayerLeafNodes.push(newTree.tree);
 
 			for (var m in matchesByDepth) {
-				if (m === '0')
-					continue;
+				if (m === '0') continue;
 				var n = 0;
 				for (; n < matchesByDepth[m].length - 1; n += 2) {
 					// Replace old leaf with:
@@ -285,17 +284,16 @@ var Elimination = (function () {
 		}
 
 		this.tree.tree.traverse(function (node) {
-			if (!node.isLeaf() && node.getChildAt(0).getValue().user && node.getChildAt(1).getValue().user)
-				node.getValue().state = 'available'
+			if (!node.isLeaf() && node.getChildAt(0).getValue().user && node.getChildAt(1).getValue().user) {
+				node.getValue().state = 'available';
+			}
 		});
 	};
 
 	Elimination.prototype.disqualifyUser = function (user) {
-		if (!this.isBracketFrozen)
-			return 'BracketNotFrozen';
+		if (!this.isBracketFrozen) return 'BracketNotFrozen';
 
-		if (!this.users.has(user))
-			return 'UserNotAdded';
+		if (!this.users.has(user)) return 'UserNotAdded';
 
 		this.users.get(user).isDisqualified = true;
 
@@ -303,7 +301,7 @@ var Elimination = (function () {
 		var match = null;
 		var result;
 		this.tree.tree.traverse(function (node) {
-			if (node.getValue().state === 'available')
+			if (node.getValue().state === 'available') {
 				if (node.getChildAt(0).getValue().user === user) {
 					match = [user, node.getChildAt(1).getValue().user];
 					result = 'loss';
@@ -311,72 +309,72 @@ var Elimination = (function () {
 					match = [node.getChildAt(0).getValue().user, user];
 					result = 'win';
 				}
+			}
 
 			return !match;
 		});
-		if (match)
-			return this.setMatchResult(match, result);
+		if (match) {
+			var error = this.setMatchResult(match, result);
+			if (error) {
+				throw new Error("Unexpected " + error + " from setMatchResult([" + match.join(", ") + "], " + result + ")");
+			}
+		}
 	};
 	Elimination.prototype.getUserBusy = function (user) {
-		if (!this.isBracketFrozen)
-			return 'BracketNotFrozen';
+		if (!this.isBracketFrozen) return 'BracketNotFrozen';
 
-		if (!this.users.has(user))
-			return 'UserNotAdded';
+		if (!this.users.has(user)) return 'UserNotAdded';
 		return this.users.get(user).isBusy;
 	};
 	Elimination.prototype.setUserBusy = function (user, isBusy) {
-		if (!this.isBracketFrozen)
-			return 'BracketNotFrozen';
+		if (!this.isBracketFrozen) return 'BracketNotFrozen';
 
-		if (!this.users.has(user))
-			return 'UserNotAdded';
+		if (!this.users.has(user)) return 'UserNotAdded';
 		this.users.get(user).isBusy = isBusy;
 	};
 
 	Elimination.prototype.getAvailableMatches = function () {
-		if (!this.isBracketFrozen)
-			return 'BracketNotFrozen';
+		if (!this.isBracketFrozen) return 'BracketNotFrozen';
 
 		var matches = [];
 		this.tree.tree.traverse(function (node) {
 			if (node.getValue().state === 'available') {
 				var userA = node.getChildAt(0).getValue().user;
 				var userB = node.getChildAt(1).getValue().user;
-				if (!this.users.get(userA).isBusy && !this.users.get(userB).isBusy)
+				if (!this.users.get(userA).isBusy && !this.users.get(userB).isBusy) {
 					matches.push([userA, userB]);
+				}
 			}
 		}, this);
 		return matches;
 	};
 	Elimination.prototype.setMatchResult = function (match, result, score) {
-		if (!this.isBracketFrozen)
-			return 'BracketNotFrozen';
+		if (!this.isBracketFrozen) return 'BracketNotFrozen';
 
-		if (!(result in {win:1, loss:1}))
-			return 'InvalidMatchResult';
+		if (!(result in {win:1, loss:1})) return 'InvalidMatchResult';
 
-		if (!this.users.has(match[0]) || !this.users.has(match[1]))
-			return 'UserNotAdded';
+		if (!this.users.has(match[0]) || !this.users.has(match[1])) return 'UserNotAdded';
 
 		var targetNode = null;
 		this.tree.tree.traverse(function (node) {
 			if (node.getValue().state === 'available' &&
 				node.getChildAt(0).getValue().user === match[0] &&
-				node.getChildAt(1).getValue().user === match[1])
+				node.getChildAt(1).getValue().user === match[1]) {
 				targetNode = node;
+			}
 			return !targetNode;
 		});
-		if (!targetNode)
-			return 'InvalidMatch';
+		if (!targetNode) return 'InvalidMatch';
 
-		if (!score)
-			if (result === 'win')
+		if (!score) {
+			if (result === 'win') {
 				score = [1, 0];
-			else
+			} else {
 				score = [0, 1];
+			}
+		}
 
-		var match = targetNode.getValue();
+		match = targetNode.getValue();
 		match.state = 'finished';
 		match.result = result;
 		match.score = score.slice(0);
@@ -387,6 +385,7 @@ var Elimination = (function () {
 
 		var loserData = this.users.get(loser);
 		++loserData.loseCount;
+		if (loserData.loseCount === this.maxSubtrees) loserData.isEliminated = true;
 
 		if (targetNode.getParent()) {
 			var userA = targetNode.getParent().getChildAt(0).getValue().user;
@@ -394,18 +393,23 @@ var Elimination = (function () {
 			if (userA && userB) {
 				targetNode.getParent().getValue().state = 'available';
 
-				if (this.users.get(userA).isDisqualified)
-					return this.setMatchResult([userA, userB], 'loss');
-				else if (this.users.get(userB).isDisqualified)
-					return this.setMatchResult([userA, userB], 'win');
+				var error = '';
+				if (this.users.get(userA).isDisqualified) {
+					error = this.setMatchResult([userA, userB], 'loss');
+				} else if (this.users.get(userB).isDisqualified) {
+					error = this.setMatchResult([userA, userB], 'win');
+				}
+
+				if (error) {
+					throw new Error("Unexpected " + error + " from setMatchResult([" + userA + ", " + userB + "], ...)");
+				}
 			}
 		} else if (loserData.loseCount < this.maxSubtrees && !loserData.isDisqualified) {
 			var newRoot = new TreeNode(null, {state: 'available'});
 			newRoot.addChild(targetNode);
 			newRoot.addChild(new TreeNode(null, {user: loser}));
 			this.tree.tree = newRoot;
-		} else
-			return true;
+		}
 
 		if (match.onLoseNode) {
 			match.onLoseNode.getValue().user = loser;
@@ -414,29 +418,37 @@ var Elimination = (function () {
 			if (userA && userB) {
 				match.onLoseNode.getParent().getValue().state = 'available';
 
+				var error = '';
 				if (this.users.get(userA).isDisqualified)
-					return this.setMatchResult([userA, userB], 'loss');
+					error = this.setMatchResult([userA, userB], 'loss');
 				else if (this.users.get(userB).isDisqualified)
-					return this.setMatchResult([userA, userB], 'win');
+					error = this.setMatchResult([userA, userB], 'win');
+
+				if (error) {
+					throw new Error("Unexpected " + error + " from setMatchResult([" + userA + ", " + userB + "], ...)");
+				}
 			}
 		}
 	};
 
+	Elimination.prototype.isTournamentEnded = function () {
+		return this.tree.tree.getValue().state === 'finished';
+	};
+
 	Elimination.prototype.getResults = function () {
-		if (this.tree.tree.getValue().state !== 'finished')
-			return 'TournamentNotEnded';
+		if (!this.isTournamentEnded()) return 'TournamentNotEnded';
 
 		var results = [];
 		var currentNode = this.tree.tree;
 		for (var n = 0; n < this.maxSubtrees; ++n) {
 			results.push([currentNode.getValue().user]);
 			currentNode = currentNode.getChildAt(currentNode.getValue().result === 'loss' ? 0 : 1);
-			if (!currentNode)
-				break;
+			if (!currentNode) break;
 		}
 
-		if (this.users.size - 1 === this.maxSubtrees && currentNode)
+		if (this.users.size - 1 === this.maxSubtrees && currentNode) {
 			results.push([currentNode.getValue().user]);
+		}
 
 		return results;
 	};

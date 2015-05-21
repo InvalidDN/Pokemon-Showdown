@@ -15,14 +15,13 @@
 // Because I don't want two files, we're going to fork ourselves.
 
 if (!process.send) {
-
 	// This is the parent
 
 	var guid = 1;
 	var callbacks = {};
 	var callbackData = {};
 
-	var child = require('child_process').fork('verifier.js');
+	var child = require('child_process').fork('verifier.js', {cwd: __dirname});
 	exports.verify = function (data, signature, callback) {
 		var localGuid = guid++;
 		callbacks[localGuid] = callback;
@@ -36,12 +35,10 @@ if (!process.send) {
 			delete callbackData[response.guid];
 		}
 	});
-
 } else {
-
 	// This is the child
 
-	var Config = require('./config/config.js');
+	global.Config = require('./config/config.js');
 	var crypto = require('crypto');
 
 	var keyalgo = Config.loginServer.keyAlgorithm;
@@ -60,4 +57,9 @@ if (!process.send) {
 		});
 	});
 
+	process.on('disconnect', function () {
+		process.exit();
+	});
+
+	require('./repl.js').start('verifier', function (cmd) { return eval(cmd); });
 }
