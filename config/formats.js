@@ -36,7 +36,7 @@ exports.Formats = [
 
 	{
 		name: "Breakdown Standard",
-		section: "XY Singles",
+		section: "ORAS Singles",
 		
 		mod: 'bdtiers',
 		effectType: 'Format',
@@ -45,7 +45,7 @@ exports.Formats = [
 	},
 	{
 		name: "Breakdown Uber",
-		section: "XY Singles",
+		section: "ORAS Singles",
 
 		mod: 'bdtiers',		
 		effectType: 'Format',
@@ -54,7 +54,7 @@ exports.Formats = [
 	},
 	{
 		name: "Breakdown Creative",
-		section: "XY Singles",
+		section: "ORAS Singles",
 
 		mod: 'bdtiers',		
 		effectType: 'Format',
@@ -63,7 +63,7 @@ exports.Formats = [
 	},
 	{
 		name: "Breakdown Inspired",
-		section: "XY Singles",
+		section: "ORAS Singles",
 
 		mod: 'bdtiers',		
 		effectType: 'Format',
@@ -72,7 +72,7 @@ exports.Formats = [
 	},
 	{
 		name: "Breakdown Tesla",
-		section: "XY Singles",
+		section: "ORAS Singles",
 
 		mod: 'bdtiers',		
 		effectType: 'Format',
