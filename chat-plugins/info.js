@@ -12,6 +12,186 @@
 
 var commands = exports.commands = {
 
+ //Breakdown Commands
+	banfromheart: 'bfh',
+	bfh: function(target, room, user) {
+	if(user.can('broadcast')){
+			room.addRaw('<font color="#009999"><b>'+target+'</font></b> was banned from my heart by <font color="#009999"><b>'+user.name+'</font></b>')
+			return false;
+		}
+	},
+
+	facepalm: 'face',
+	face: function(target, room, user) {
+			{
+			room.addRaw('<font color="#009999"><b>'+target+'</font></b> has caused <font color="#009999"><b>'+user.name+'</font></b> to facepalm')
+			return false;
+		}
+	},
+
+	hastur: function(target, room, user) {
+	if(user.can('broadcast')){
+			room.addRaw('<div style="background-color:#6688AA;color:white;padding:2px 4px"><img src="http://i215.photobucket.com/albums/cc249/Toke2000/hastur_zpsf1e60cbf.png" height="229" /></div>')
+			return false;
+		}
+	},
+	
+	wall: 'htmlwall',
+	declare: 'htmlwall',
+	announce: 'htmlwall',
+	htmlwall: function(target, room, user) {
+	if (!user.can('broadcast')){ return this.sendReply('You do not have enough authority to use this command.')};
+		{
+			room.addRaw('<div class="infobox"><b>Walled by '+user.name+':</font></b> <br />'+target+'</div>')
+			return false;
+		}
+	},
+
+	hspeak: function(target, room, user) {
+	if(user.can('broadcast')){
+			room.addRaw('<font color="#666666">♥</font><font color="#0dff57"><b>Hastur:</font></b> '+target)
+			return false;
+		}
+	},	
+	
+	hme: function(target, room, user) {
+	if(user.can('broadcast')){
+			room.addRaw('<font color="#0dff57"><b>•</font> +Hastur <i>'+target+'</i>')
+			return false;
+		}
+	},	
+	
+	introduction: 'intro',
+	intro: function(target, room, user) {
+		if (!this.canBroadcast()) return;
+		this.sendReplyBox('New to the server?<br />' +
+			'- <a href="http://breakdown.forumotion.com/t370-to-our-showdown-users" target="_blank">We Are Not Smogon.</a><br />' +
+			'- <a href="http://breakdown.forumotion.com/t144-5th-gen-tiers" target="_blank">Our Tiers</a><br />' +
+			'- <a href="http://breakdown.forumotion.com/t380-server-rules#1982" target="_blank">Server Rules</a>');
+	},
+	
+	forums: 'forum',
+	forum: function(target, room, user) {
+		if (!this.canBroadcast()) return;
+		this.sendReplyBox('Welcome to Breakdown. Have a lovely time. Here is the site:<br />' +
+			'- <a href="http://breakdown.forumotion.com" target="_blank">breakdown.forumotion.com</a><br />');
+	},
+
+	legendaries: 'legends',
+	legends: function(target, room, user) {
+		if (!this.canBroadcast()) return;
+		this.sendReplyBox('The truth about legendary Pokemon:<br />' +
+			'- <a href="http://breakdown.forumotion.com/t271-legendaries-explained" target="_blank">Legendary Pokemon are not all banned or broken.</a><br />');
+	},
+
+	cap: 'cang',
+	cang: function(target, room, user) {
+		if (!this.canBroadcast()) return;
+		if (!target)
+		this.sendReplyBox('Breakdown is making its own metagame, with hookers and black jack, Check it out here:<br />' +
+			'- <a href="http://breakdown.forumotion.com/t595-breakdown-cang-submission" target="_blank">CANG Submission</a><br />' +
+			'- <a href="http://breakdowncang.wikia.com/wiki/Breakdown_CANG_Wiki" target="_blank">CANG Wiki</a><br />' +
+			'- Proper formatting to link to a page is /CANG Pokemon, Move, Item, or Ability.<br />' + 
+			'- eg: /CANG Abra');
+		else	this.sendReplyBox('- <a href="http://breakdowncang.wikia.com/wiki/'+target+'" target="_blank">'+target+' Wiki Page</a><br />');
+	},
+
+	kingtracebanit: 'kbi',
+	kbi: function(target, room, user) {
+	if(user.can('broadcast')){
+			room.addRaw('<font color="#009999"><b>Baniteer Kingtrace</font></b> adds the power of justice, granting Captain Ban-it the ability to uphold the rules regardless of your understanding of them. No one knows why.')
+			return false;
+		}
+	},
+
+	invalidbanit: 'ibi',
+	ibi: function(target, room, user) {
+	if(user.can('broadcast')){
+			room.addRaw('<font color="#009999"><b>Baniteer Invalid</font></b> suspends the writ of Habeas Corpus for Captain Ban-it. No one knows why.')
+			return false;
+		}
+	},
+
+	frostbanit: 'fbi',
+	fbi: function(target, room, user) {
+	if(user.can('broadcast')){
+			room.addRaw('<font color="#009999"><b>Baniteer Frost</font></b> removes all accountability from Captain Ban-it. No one knows why.')
+			return false;
+		}
+	},
+	
+	banitbanit: 'bibi',
+	bibi: function(target, room, user) {
+	if(user.can('broadcast')){
+			room.addRaw('<b><font color="#009999">Captain Ban-it:</b></font> When your powers combine. I am Captain Ban-it! <font color="#009999"><b>Captain Ban-it</font></b> spiraled so fast he created a tornado that pulled in <b><font color="#009999">'+target+'</b></font> and dispersed the remnants where no one would ever find them.')
+			return false;
+		}
+	},
+	
+	fantasy: function(target, room, user) {
+		if (!this.canBroadcast()) return;
+		this.sendReplyBox('Breakdown is hosting a Fantasy Pokemon league, learn everything about it and join here:<br />' +
+			'- <a href="http://breakdown.forumotion.com/t541-fantasy-pokemon-a-breakdown-invention/" target="_blank">Fantasy Pokemon</a><br />');
+	},
+
+	speedtiers: 'st',
+	speed: function(target, room, user) {
+		if (!this.canBroadcast()) return;
+		this.sendReplyBox('- <a href="http://breakdown.forumotion.com/t492-speed-tiers/" target="_blank">As you requested, Speed Tiers.</a><br />');
+	},
+
+	rule: 'rules',
+	rules: function(target, room, user) {
+		if (!this.canBroadcast()) return;
+		this.sendReplyBox('<b>Follow the rules:</b><br />' +
+			'<b>No Hate Speech</b> - Hate Speech will get you banned. If your word dehumanizes an entire section of the human race, it is hate speech, if we say it is hate speech it is. If your name contains hatespeech, it will be changed and you will be locked until you comply with the rules.<br />' +
+			'<b>No Spam</b> - Use your best judgement. If it can be said in one line, say it in one line. Do not repeat yourself. Do not post a link that is intended to detract from the server.<br />' +
+			'a) You may link to Oriserver. You may link to your Youtube, Twitter, etc.<br />' +
+			'<b>Do Not Ask For Auth</b> - Ask and you shall not receive.<br />' +
+			'<b>Do Not Abuse Auth</b> - Do not ban, mute, or kick people that do not deserve it. Using auth when it is not necessary is also abuse because it is showing off that you are auth.<br />'+
+			'<b>Do Not Be An Attention Whore</b> -  If everyone is sick of hearing about your stupid life, and or relationship, and or other thing that revolves around you, shut the hell up about it.<br />' + 
+			'<b>No Minimodding</b> - Minimodding is telling people what the rules are when you are not auth or attempt to help a mod by bullying a user who broke rules. Chances are you are only going to make the infraction seem stupid, so shut up and let the staff work.<br />' + 
+			'<b>No Harassment</b> - If you do not know what harassment is, look it up. And do not antagonize people then say they are harassing you, we will ban you. (see "Do Not Be An Attention Whore")<br />' + 
+			'<b>Keep Arguments In PMs</b> - Extended personal arguments should be moved to private messages. Discussions and debates are fine in main, but if things escelate beyond civil levels take it to PMs. Refusal to do so when asked may result in a ban. </div>');
+	},
+
+	rpstiff: 'rpstuff',
+	rpstuff: function(target, room, user) {
+		if (!this.canBroadcast()) return;
+		this.sendReplyBox('<b>Role Playing Rules:</b><br />' +
+			'<b>Do Not Break Server Rules</b> - Type /rules to read the rules, Do not think that I have come to abolish the law or the prophets.<br />' +
+			'<b>In Character</b> - When your character is talking, just type what s/he is saying with no special formatting.<br />' +
+			'<b>Character Actions</b> - Use /me to denote character actions.<br />' +
+			'<b>Event Narration</b> - If something is happenning that cannot be explained through other means, put it in quotation marks.<br />' +
+			'<b>Out of Character</b> - when you speak out of character, put what you say in parenthesis.<br />'+
+			'<b>Room Master</b> - Not every RP needs a Room Master, a room master narrates the events and almost exclusively uses quotation marks. The Room Master may want to use a die to decide the outcomes of actions. If so use a 20 sided die or set random.org to min 1 max 20 and treat it as a die roll. 1 means something bad happenned to the person performing the action, 20 means crit so think of something unlikely and beneficial.<br />'+
+			'<b>No Godmodding</b> -  You cannot be invincible, reality warping, or plot centering for no reason what so ever.</div>');
+	},
+
+	banlist: 'tiers',
+	tiers: function(target, room, user) {
+		if (!this.canBroadcast()) return;
+		this.sendReplyBox('<a href="http://breakdown.forumotion.com/t571-gen-6-tiers" target="_blank">Gen 6 Tiers</a><br /><a href="http://breakdown.forumotion.com/t144-5th-gen-tiers" target="_blank">Gen 5 Tiers</a>');
+	},
+	
+	mnt: 'mynameto',
+ 	mynameto: function(target, room, user) {
+ 		if (!target || target.length > 19) {
+ 			return this.sendReply('No valid name was specified.');
+ 		}
+ 		{
+ 			var entry = ''+user.name+'  changed their name to  '+target+'(imp) by using /mynameto or /mnt.';
+ 			this.privateModCommand('(' + entry + ')');
+ 			user.forceRename(target+'(imp)', undefined, true);
+ 		}
+ 	},
+
+	donate: function(target, room, user) {
+		if (!this.canBroadcast()) return;
+		this.sendReplyBox('<center><div><img src="http://catputer.com/joe/breakdown/bdown2.png "></div><div><a href="http://breakdown.forumotion.com" border="0"><img src="http://catputer.com/joe/breakdown/bdown-forums.png"></a><a href="http://breakdown.forumotion.com/t571-gen-6-tiers" border="0"><img src="http://catputer.com/joe/breakdown/bdown-tiers.png"></a></div>CANG: <a href="http://breakdown.forumotion.com/t595-breakdown-cang-submission" target="_blank">Submission</a> <a href="http://breakdowncang.wikia.com/wiki/Breakdown_CANG_Wiki" target="_blank">Wiki</a> - <a href="http://breakdown.forumotion.com/t637-breakdown-clan-prize-player-league" target="_blank">Clan Season</a> - <a href="http://breakdown.forumotion.com/t659-july-2014-tier-nominations" target="_blank">Tier Noms</a></center>');
+	},
+//End Breakdown Commands
+
 	ip: 'whois',
 	rooms: 'whois',
 	alt: 'whois',
