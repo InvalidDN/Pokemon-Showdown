@@ -41,7 +41,7 @@ exports.BattleFormats = {
 	},
 	standardmegatites: {
 		effectType: 'Banlist',
-		banlist: ['Charizardite X', 'Charizardite Y', 'Gardevoirite', 'Manectricite', 'Medichamite', 'Pinsirite', 'Venusaurite']
+		banlist: ['Charizardite X', 'Charizardite Y', 'Gardevoirite', 'Manectite', 'Medichamite', 'Pinsirite', 'Venusaurite']
 	},
 	creativemegatites: {
 		effectType: 'Banlist',
