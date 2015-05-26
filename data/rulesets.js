@@ -21,6 +21,44 @@ exports.BattleFormats = {
 		ruleset: ['Sleep Clause Mod', 'Species Clause', 'Nickname Clause', 'Moody Clause', 'OHKO Clause', 'Endless Battle Clause', 'HP Percentage Mod', 'Cancel Mod'],
 		banlist: ['Unreleased', 'Illegal']
 	},
+	standard5: {
+		effectType: 'Banlist',
+		ruleset: ['Sleep Clause Mod', 'Species Clause', 'OHKO Clause', 'Moody Clause', 'Evasion Moves Clause', 'Evasion Abilities Clause', 'HP Percentage Mod', 'haxitems', 'banubercombos5', 'freezeclause'],
+		banlist: ['Unreleased', 'Illegal']
+	},
+	standardpokebank: {
+		effectType: 'Banlist',
+		ruleset: ['Sleep Clause Mod', 'Species Clause', 'Moody Clause', 'OHKO Clause', 'Evasion Moves Clause', 'Evasion Abilities Clause', 'HP Percentage Mod', 'haxitems', 'banubercombos', 'freezeclause'],
+		banlist: ['Illegal']
+	},
+	banubercombos: {
+		effectType: 'Banlist',
+		banlist: ['Illegal', 'Swagger']
+	},
+	ubermegatites: {
+		effectType: 'Banlist',
+		banlist: ['Blazikenite', 'Gengarite', 'Kangaskhanite', 'Lucarionite', 'Mawilite', 'Megagrossite', 'Salamencite']
+	},
+	standardmegatites: {
+		effectType: 'Banlist',
+		banlist: ['Charizardite X', 'Charizardite Y', 'Gardevoirite', 'Manectricite', 'Medichamite', 'Pinsirite', 'Venusaurite']
+	},
+	creativemegatites: {
+		effectType: 'Banlist',
+		banlist: ['Abomasite', 'Absolite', 'Aerodactylite', 'Aggronite', 'Ampharosite', 'Blastoisnite', 'Houndoomite']
+	},
+	inspiredmegatites: {
+		effectType: 'Banlist',
+		banlist: ['Banettite']
+	},
+	haxitems: {
+		effectType: 'Banlist',
+		banlist: ['Focus Band' ,'Bright Powder' ,'Kings Rock' ,'Quick Claw', 'Razor Fang']
+	},
+	banubercombos5: {
+		effectType: 'Banlist',
+		banlist: ['Illegal', 'Drizzle ++ Swift Swim ++ Kingdra', 'Drizzle ++ Swift Swim ++ Ludicolo', 'Drizzle ++ Swift Swim ++ Omastar', 'Drizzle ++ Swift Swim ++ Kabutops', 'Drizzle ++ Swift Swim ++ Ludicolo', 'Drizzle ++ Swift Swim ++ Gorebyss', 'Drizzle ++ Swift Swim ++ Huntail', 'Drizzle ++ Swift Swim ++ Floatzel', 'Drizzle ++ Swift Swim ++ Carracosta', 'Dragonite+Multiscale', 'Excadrill ++ Sandrush ++ Sand Stream', 'Chandelure+Shadow Tag', 'Speed Boost+Blaziken', 'Prankster+Thundurus']
+	},
 	standardgbu: {
 		effectType: 'Banlist',
 		ruleset: ['Species Clause', 'Nickname Clause', 'Item Clause', 'Cancel Mod'],
@@ -626,18 +664,6 @@ exports.BattleFormats = {
 				case 'Water':
 					if (teamHas['damprock']) return ["Damp Rock is banned from Water monotype teams."];
 				}
-			}
-		}
-	},
-	megarayquazabanmod: {
-		effectType: 'Rule',
-		onStart: function () {
-			this.add('rule', 'Mega Rayquaza Ban Mod: You cannot mega evolve Rayquaza');
-			for (var i = 0; i < this.sides[0].pokemon.length; i++) {
-				if (this.sides[0].pokemon[i].speciesid === 'rayquaza') this.sides[0].pokemon[i].canMegaEvo = false;
-			}
-			for (var i = 0; i < this.sides[1].pokemon.length; i++) {
-				if (this.sides[1].pokemon[i].speciesid === 'rayquaza') this.sides[1].pokemon[i].canMegaEvo = false;
 			}
 		}
 	}
